@@ -106,7 +106,7 @@ public with sharing class DMLOperations {
         Opportunity oppToBeUpdated=[SELECT Id FROM Opportunity WHERE Id = :oppId];
         // Update the Opportunity's stage
         oppToBeUpdated.StageName=newStage;
-        //oppToBeUpdated.CloseDate=Date.today().addYears(3);
+        oppToBeUpdated.CloseDate=Date.today().addYears(3);
         // Update the Opportunity in the database
         update oppToBeUpdated;
     }
@@ -140,10 +140,17 @@ public with sharing class DMLOperations {
      */
     public static void upsertOpportunityList(List<Opportunity> opportunities) {
         // Loop through each Opportunity in the list
+        for(Opportunity temp: opportunities){
             // Set the Opportunity's Stage to Qualification
+            temp.StageName='Qualification';
             // Set the Opportunity's Close Date to 3 months from today
+            temp.CloseDate=Date.today().addMonths(3);
             // Set the Opportunity's Amount to 50000
+            temp.Amount=50000;
+        }
+            
         // Upsert the opportunities List so that records are either updated or created
+        upsert opportunities;
     }
 
     /**
