@@ -122,8 +122,11 @@ public with sharing class DMLOperations {
     public static void updateAccountFields(Id accountId, String newName, String newIndustry) {
         // Query the account
         // [SELECT Id FROM Account WHERE Id = :accountId]
-
+        account actToBeUpdated=  [SELECT Id FROM Account WHERE Id = :accountId] ;
         // Update the Account with the given Id with the new name and industry
+        actToBeUpdated.Name= newName;
+        actToBeUpdated.Industry= newIndustry;
+        update actToBeUpdated;
     }
 
 
