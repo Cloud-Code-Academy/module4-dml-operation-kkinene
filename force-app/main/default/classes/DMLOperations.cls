@@ -250,12 +250,20 @@ public with sharing class DMLOperations {
      * Insert a list of Leads and then deletes them.
      * @param leadNames The list of Lead names to be inserted.
      */
-    public static void insertAndDeleteLeads(List<String> leadNames) {
+    public static void insertAndDeleteLeads(List<String> leadNames) {//Integer[] numbers = new Integer[] {1, 2, 3};
+        //Lead[] leadList= new Lead[]{};//This is fixed as empty and cannot be dynamically increased. I don't understand why ?
+        List<Lead> leadList=new List<Lead>();
         // Loop through each Lead name
-
-        // Insert the Leads
-
+        for(String tempLead: leadNames){
+            // Insert the Leads
+           // leadList.add(tempLead);   
+           Lead lead=new Lead();
+           lead.LastName=tempLead;
+           leadList.add(lead);
+        }
         // Delete the Leads
+        //You can also clear a list be re-initializing it like this: 
+        leadList= new List<Lead>();
     }
 
 
