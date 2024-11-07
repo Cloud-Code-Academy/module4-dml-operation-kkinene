@@ -274,8 +274,17 @@ public with sharing class DMLOperations {
      * @param numOfCases The number of cases to create.
      */
     public static void createAndDeleteCases(String accountId, Integer numOfCases) {
-        // Insert the cases
+        Case[] tempCase = new Case[numOfCases];
+        for(Integer count=0; count< numOfCases;count++){
+            tempCase[count].AccountId=accountId;
+            tempCase[count].Status='New';
+            tempCase[count].Origin='Email';         
+
+        }
+        insert tempCase;
 
         // Delete the cases
+        Delete tempCase;
+        tempcase =new List<Case>();//re-initialize the Case
     }
 }
