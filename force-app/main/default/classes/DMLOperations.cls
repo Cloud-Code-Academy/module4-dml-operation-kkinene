@@ -276,15 +276,20 @@ public with sharing class DMLOperations {
     public static void createAndDeleteCases(String accountId, Integer numOfCases) {
         Case[] tempCase = new Case[numOfCases];
         for(Integer count=0; count< numOfCases;count++){
+            tempCase[count]=new Case();//I am confused as to why I have to do this, why didn't the declaring the array already take care of this ?
             tempCase[count].AccountId=accountId;
             tempCase[count].Status='New';
             tempCase[count].Origin='Email';         
 
         }
-        insert tempCase;
+        //System.debug('tempCase size ='+tempCase.size());
+        Database.insert(tempCase);//Gemini to the rescue
 
         // Delete the cases
-        Delete tempCase;
-        tempcase =new List<Case>();//re-initialize the Case
+        
+        Database.delete(tempCase, true);
+        //System.debug('tempCase size after delete ='+tempCase.size());
+
+        tempCase =new List<Case>();//re-initialize the Case
     }
 }
