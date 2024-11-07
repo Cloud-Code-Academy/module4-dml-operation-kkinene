@@ -222,19 +222,24 @@ public with sharing class DMLOperations {
 	public static void upsertAccountsWithContacts(List<Contact> contactsToUpsert) {
 		// Loop through each Contact
         String contactLastName='';
-        Account accountToUpdate;
+        //Account accountToUpdate;
 
         for(Contact tempContact: contactsToUpsert){
 		    // Extract the Account Name from Contact's LastName
             contactLastName = tempContact.LastName;
             // Get the account based on the name or create one if it doesn't exist
             List<Account> accounts = [SELECT Id FROM Account WHERE Name = :contactLastName] ;
-            accountToUpdate= upsertAccount(tempContact.LastName);
             
-            System.debug('LastName = '+contactLastName);
-            // Link the Contact to its Account using the Account Id
-            tempContact.Id=accountToUpdate.Id;
-
+            if(!accounts.isEmpty()){//Returns False if you have accounts in the list
+                Account accountToUpdate = accounts[0];
+                // Link the Contact to its Account using the Account Id
+      			tempContact.AccountId = accountToUpdate.Id;
+            }else {//Account does not exits
+                Account newAccount = new Account(Name=contactLastName);
+                insert newAccount;
+                tempContact.AccountId= newAccount.Id;
+            }
+           
             // Upsert the Contacts
             upsert tempContact;
         }
