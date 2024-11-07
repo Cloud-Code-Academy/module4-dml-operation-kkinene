@@ -192,11 +192,22 @@ public with sharing class DMLOperations {
 		List<Account> accounts = [SELECT Id FROM Account WHERE Name = :accountName];
 
 		// if the Account exists, update the description
+        if(!accounts.isEmpty()){//accounts!=null did not work
+            Account accountToUpdate= accounts[0];
+            accountToUpdate.Description='Updated Account';
+            update accountToUpdate;
+            return accountToUpdate;
 
+        }else{
 		// otherwise, create a new Account and set the description
+        Account newAccount= new Account(Name=accountName, Industry='Consulting');
+        newAccount.Description='New Account';
+        // Upsert the Account
+        upsert newAccount;
+        return newAccount;
 
-		// Upsert the Account
-		return null;
+        }
+
 	}
 
     /**
