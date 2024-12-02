@@ -261,14 +261,21 @@ public with sharing class DMLOperations {
         // Loop through each Lead name
         for(String tempLead: leadNames){
             // Insert the Leads
-           // leadList.add(tempLead);   
            Lead lead = new Lead();
            lead.LastName = tempLead;
            leadList.add(lead);
         }
+        if(!leadList.isEmpty()){
+            insert leadList;
+        }
         // Delete the Leads
         //You can also clear a list be re-initializing it like this: 
-        leadList = new List<Lead>();
+        //leadList = new List<Lead>();
+        if(!leadList.isEmpty()){
+            delete leadList;
+            //You can also clear a list be re-initializing it like this: 
+            leadList = new List<Lead>();
+        }
     }
 
 
