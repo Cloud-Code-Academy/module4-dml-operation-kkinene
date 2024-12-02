@@ -146,7 +146,7 @@ public with sharing class DMLOperations {
             // Set the Opportunity's Close Date to 3 months from today
             temp.CloseDate=Date.today().addMonths(3);
             // Set the Opportunity's Amount to 50000
-            temp.Amount=50000;
+            temp.Amount = 50000;
         }
             
         // Upsert the opportunities List so that records are either updated or created
