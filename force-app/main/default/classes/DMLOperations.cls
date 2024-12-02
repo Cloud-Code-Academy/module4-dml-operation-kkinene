@@ -164,18 +164,20 @@ public with sharing class DMLOperations {
      * @param oppNames The list of Opportunity names.
      */
     public static void upsertOpportunities(String accountName, List<String> oppNames) {
-        List <Opportunity> oppList= new List<Opportunity>();
         Account newAccount= new Account(Name=AccountName, Industry='Consulting');
         upsert newAccount;
         String newAccountId=newAccount.Id;
 
         // Loop through each Opportunity name
+        List <Opportunity> oppList = new List <Opportunity>();
         for(Integer count= 0;count<oppNames.size();count+=1){
-            System.debug(oppNames[count]);
             // Create an Opportunity with the given name
-            Opportunity temp = new Opportunity(AccountId=newAccountId, Name=oppNames[count], StageName='Prospecting', CloseDate= Date.today().addYears(2));
+            Opportunity temp = new Opportunity(AccountId=newAccountId, Name=oppNames[count], StageName = 'Prospecting', CloseDate = Date.today().addYears(2));
             // Add the Opportunity to the list
-            upsert temp;
+            oppList.add(temp);
+        }
+        if (!oppList.isEmpty()){
+            upsert oppList;
         }
     }
     
@@ -200,8 +202,8 @@ public with sharing class DMLOperations {
 
         }else{
 		// otherwise, create a new Account and set the description
-        Account newAccount= new Account(Name=accountName, Industry='Consulting');
-        newAccount.Description='New Account';
+        Account newAccount = new Account(Name = accountName, Industry = 'Consulting');
+        newAccount.Description = 'New Account';
         // Upsert the Account
         upsert newAccount;
         return newAccount;
@@ -223,7 +225,7 @@ public with sharing class DMLOperations {
 		// Loop through each Contact
         String contactLastName='';
         //Account accountToUpdate;
-
+        List <Contact> contactList = new List <Contact>();
         for(Contact tempContact: contactsToUpsert){
 		    // Extract the Account Name from Contact's LastName
             contactLastName = tempContact.LastName;
@@ -235,13 +237,16 @@ public with sharing class DMLOperations {
                 // Link the Contact to its Account using the Account Id
       			tempContact.AccountId = accountToUpdate.Id;
             }else {//Account does not exits
-                Account newAccount = new Account(Name=contactLastName);
+                Account newAccount = new Account(Name = contactLastName);
                 insert newAccount;
-                tempContact.AccountId= newAccount.Id;
+                tempContact.AccountId = newAccount.Id;
             }
            
-            // Upsert the Contacts
-            upsert tempContact;
+            contactList.add(tempContact); 
+        }
+        // Upsert the Contacts
+        if(!contactList.isEmpty()){
+            upsert contactList;
         }
 	}
 
@@ -252,18 +257,18 @@ public with sharing class DMLOperations {
      */
     public static void insertAndDeleteLeads(List<String> leadNames) {//Integer[] numbers = new Integer[] {1, 2, 3};
         //Lead[] leadList= new Lead[]{};//This is fixed as empty and cannot be dynamically increased. I don't understand why ?
-        List<Lead> leadList=new List<Lead>();
+        List<Lead> leadList = new List<Lead>();
         // Loop through each Lead name
         for(String tempLead: leadNames){
             // Insert the Leads
            // leadList.add(tempLead);   
-           Lead lead=new Lead();
-           lead.LastName=tempLead;
+           Lead lead = new Lead();
+           lead.LastName = tempLead;
            leadList.add(lead);
         }
         // Delete the Leads
         //You can also clear a list be re-initializing it like this: 
-        leadList= new List<Lead>();
+        leadList = new List<Lead>();
     }
 
 
@@ -275,11 +280,11 @@ public with sharing class DMLOperations {
      */
     public static void createAndDeleteCases(String accountId, Integer numOfCases) {
         Case[] tempCase = new Case[numOfCases];
-        for(Integer count=0; count< numOfCases;count++){
-            tempCase[count]=new Case();//I am confused as to why I have to do this, why didn't the declaring the array already take care of this ?
-            tempCase[count].AccountId=accountId;
-            tempCase[count].Status='New';
-            tempCase[count].Origin='Email';         
+        for(Integer count = 0; count < numOfCases;count++){
+            tempCase[count] = new Case();//I am confused as to why I have to do this, why didn't the declaring the array already take care of this ?
+            tempCase[count].AccountId = accountId;
+            tempCase[count].Status = 'New';
+            tempCase[count].Origin = 'Email';         
 
         }
         //System.debug('tempCase size ='+tempCase.size());
@@ -290,6 +295,6 @@ public with sharing class DMLOperations {
         Database.delete(tempCase, true);
         //System.debug('tempCase size after delete ='+tempCase.size());
 
-        tempCase =new List<Case>();//re-initialize the Case
+        tempCase = new List<Case>();//re-initialize the Case
     }
 }
